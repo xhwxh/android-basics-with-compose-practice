@@ -2,7 +2,7 @@
 <resources>
 
     <style name="Theme.Woof" parent="android:Theme.Material.Light.NoActionBar">
-        <item name="android:statusBarColor">@color/grey_50</item>
+<!--        <item name="android:statusBarColor">@color/grey_50</item> not needed since it will be inherited from themes.xml-->
         <item name="android:windowLightStatusBar">true</item>
     </style>
 </resources>
