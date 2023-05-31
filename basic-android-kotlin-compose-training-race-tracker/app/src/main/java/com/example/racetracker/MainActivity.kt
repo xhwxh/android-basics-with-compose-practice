@@ -40,4 +40,8 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+    companion object {
+        const val TAG = "maxtest"
+    }
 }

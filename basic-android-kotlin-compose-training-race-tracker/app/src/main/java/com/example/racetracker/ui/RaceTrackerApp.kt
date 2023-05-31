@@ -16,6 +16,7 @@
 
 package com.example.racetracker.ui
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -49,6 +50,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.racetracker.MainActivity.Companion.TAG
 import com.example.racetracker.R
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -68,11 +70,29 @@ fun RaceTrackerApp() {
     }
     var raceInProgress by remember { mutableStateOf(false) }
 
+    if (raceInProgress) {
+        LaunchedEffect(key1 = playerOne, key2 = playerTwo) {
+            coroutineScope {
+                launch {
+                    Log.d(TAG, "first launch called")
+                    playerOne.run()
+                }
+                launch {
+                    Log.d(TAG, "second launch called")
+                    playerTwo.run()
+                }
+            }
+            raceInProgress = false
+        }
+    }
+
     RaceTrackerScreen(
         playerOne = playerOne,
         playerTwo = playerTwo,
         isRunning = raceInProgress,
-        onRunStateChange = { raceInProgress = it }
+        onRunStateChange = {
+            raceInProgress = it
+        }
     )
 }
 
