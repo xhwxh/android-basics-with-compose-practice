@@ -18,6 +18,12 @@ package com.example.racetracker.ui.test
 
 import com.example.racetracker.ui.RaceParticipant
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.advanceTimeBy
+import kotlinx.coroutines.test.runCurrent
+import kotlinx.coroutines.test.runTest
+import org.junit.Assert.assertEquals
+import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class RaceParticipantTest {
@@ -28,4 +34,30 @@ class RaceParticipantTest {
         initialProgress = 0,
         progressIncrement = 1
     )
+
+    @Test
+    fun raceParticipant_RaceStarted_ProgressUpdated() = runTest {
+        val expectedProgress = 1
+        launch { raceParticipant.run() }
+
+        // Because the run() calls delay()
+        // if we don't advance time we'll have to wait.
+        // So this reduce the test execution time.
+        // Also, when hitting delay() in the launch {}
+        // it will suspend and continue execute the code after launch {}
+        advanceTimeBy(raceParticipant.progressDelayMillis)
+
+        // Call this since advanceTimeBy() doesn't run the task scheduled at
+        // the given duration
+        runCurrent()
+        assertEquals(expectedProgress, raceParticipant.currentProgress)
+    }
+
+    @Test
+    fun raceParticipant_RaceFinished_ProgressUpdated() = runTest {
+        launch { raceParticipant.run() }
+        advanceTimeBy(raceParticipant.maxProgress * raceParticipant.progressDelayMillis)
+        runCurrent()
+        assertEquals(100, raceParticipant.currentProgress)
+    }
 }
